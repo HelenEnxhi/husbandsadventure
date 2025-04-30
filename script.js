@@ -18,39 +18,64 @@ setInterval(() => {
 // Function to create explosion particles
 function createExplosion(x, y) {
     const colors = ['#ff0000', '#ff4400', '#ff8800', '#ffaa00', '#ffcc00', '#ff0000'];
-    const particles = 150; // Increased number of particles
+    const particles = 200; // More particles
 
-    // Create a flash effect
-    const flash = document.createElement('div');
-    flash.style.cssText = `
+    // Create shockwave effect
+    const shockwave = document.createElement('div');
+    shockwave.style.cssText = `
         position: fixed;
         top: 0;
         left: 0;
         width: 100vw;
         height: 100vh;
         background: radial-gradient(circle at ${x}px ${y}px, 
-            rgba(255, 255, 255, 0.8) 0%,
-            rgba(255, 200, 0, 0.4) 30%,
-            rgba(255, 100, 0, 0.2) 60%,
+            rgba(255, 255, 255, 1) 0%,
+            rgba(255, 200, 0, 0.8) 20%,
+            rgba(255, 100, 0, 0.6) 40%,
+            rgba(255, 0, 0, 0.4) 60%,
             rgba(255, 0, 0, 0) 100%
         );
         pointer-events: none;
         z-index: 9998;
-        animation: flash 0.5s ease-out forwards;
+        animation: shockwave 0.8s ease-out forwards;
     `;
-    document.body.appendChild(flash);
-    setTimeout(() => flash.remove(), 500);
+    document.body.appendChild(shockwave);
+    setTimeout(() => shockwave.remove(), 800);
+
+    // Create blast wave
+    const blastWave = document.createElement('div');
+    blastWave.style.cssText = `
+        position: fixed;
+        top: ${y}px;
+        left: ${x}px;
+        width: 0;
+        height: 0;
+        background: radial-gradient(circle, 
+            rgba(255, 255, 255, 1) 0%,
+            rgba(255, 200, 0, 0.8) 30%,
+            rgba(255, 100, 0, 0.6) 60%,
+            rgba(255, 0, 0, 0.4) 80%,
+            rgba(255, 0, 0, 0) 100%
+        );
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+        z-index: 9997;
+        animation: blast-wave 0.5s ease-out forwards;
+    `;
+    document.body.appendChild(blastWave);
+    setTimeout(() => blastWave.remove(), 500);
 
     for (let i = 0; i < particles; i++) {
         const particle = document.createElement('div');
         particle.className = 'particle';
         
         // Random properties for each particle
-        const size = Math.random() * 15 + 5; // Bigger particles
+        const size = Math.random() * 20 + 10; // Bigger particles
         const color = colors[Math.floor(Math.random() * colors.length)];
         const angle = Math.random() * Math.PI * 2;
-        const velocity = Math.random() * 15 + 10; // Faster particles
-        const lifetime = Math.random() * 1500 + 1000; // Longer lifetime
+        const velocity = Math.random() * 20 + 15; // Faster particles
+        const lifetime = Math.random() * 2000 + 1000; // Longer lifetime
 
         // Style the particle
         particle.style.cssText = `
@@ -63,8 +88,8 @@ function createExplosion(x, y) {
             border-radius: 50%;
             pointer-events: none;
             z-index: 9999;
-            box-shadow: 0 0 ${size/2}px ${color};
-            animation: particle-explode ${lifetime}ms ease-out forwards;
+            box-shadow: 0 0 ${size}px ${color};
+            animation: particle-blast ${lifetime}ms ease-out forwards;
         `;
 
         // Add particle to the page
@@ -105,21 +130,12 @@ function updateMood(mood) {
             angerLevel = 100;
             angerMeter.style.width = '100%';
             
-            // Create massive explosions across the screen
+            // Create massive blast in the center
             const screenWidth = window.innerWidth;
             const screenHeight = window.innerHeight;
             
-            // Center explosion
+            // Center blast
             createExplosion(screenWidth/2, screenHeight/2);
-            
-            // Create explosions in a grid pattern
-            for(let x = 0; x < screenWidth; x += screenWidth/4) {
-                for(let y = 0; y < screenHeight; y += screenHeight/4) {
-                    setTimeout(() => {
-                        createExplosion(x, y);
-                    }, Math.random() * 500);
-                }
-            }
             
             // Add dramatic effect
             document.body.classList.add('beast-mode');
@@ -176,24 +192,38 @@ style.textContent = `
         from { transform: translateX(0); }
         to { transform: translateX(100%); }
     }
-    @keyframes particle-explode {
+    @keyframes particle-blast {
         0% {
             transform: translate(0, 0) scale(1);
             opacity: 1;
         }
         100% {
             transform: translate(
-                ${Math.random() * 400 - 200}px,
-                ${Math.random() * 400 - 200}px
+                ${Math.random() * 800 - 400}px,
+                ${Math.random() * 800 - 400}px
             ) scale(0);
             opacity: 0;
         }
     }
-    @keyframes flash {
+    @keyframes shockwave {
         0% {
+            opacity: 1;
+            transform: scale(0.5);
+        }
+        100% {
+            opacity: 0;
+            transform: scale(2);
+        }
+    }
+    @keyframes blast-wave {
+        0% {
+            width: 0;
+            height: 0;
             opacity: 1;
         }
         100% {
+            width: 2000px;
+            height: 2000px;
             opacity: 0;
         }
     }
