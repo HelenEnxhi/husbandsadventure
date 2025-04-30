@@ -17,19 +17,40 @@ setInterval(() => {
 
 // Function to create explosion particles
 function createExplosion(x, y) {
-    const colors = ['#ff0000', '#ff4400', '#ff8800', '#ffaa00'];
-    const particles = 50; // Number of particles
+    const colors = ['#ff0000', '#ff4400', '#ff8800', '#ffaa00', '#ffcc00', '#ff0000'];
+    const particles = 150; // Increased number of particles
+
+    // Create a flash effect
+    const flash = document.createElement('div');
+    flash.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: radial-gradient(circle at ${x}px ${y}px, 
+            rgba(255, 255, 255, 0.8) 0%,
+            rgba(255, 200, 0, 0.4) 30%,
+            rgba(255, 100, 0, 0.2) 60%,
+            rgba(255, 0, 0, 0) 100%
+        );
+        pointer-events: none;
+        z-index: 9998;
+        animation: flash 0.5s ease-out forwards;
+    `;
+    document.body.appendChild(flash);
+    setTimeout(() => flash.remove(), 500);
 
     for (let i = 0; i < particles; i++) {
         const particle = document.createElement('div');
         particle.className = 'particle';
         
         // Random properties for each particle
-        const size = Math.random() * 10 + 5;
+        const size = Math.random() * 15 + 5; // Bigger particles
         const color = colors[Math.floor(Math.random() * colors.length)];
         const angle = Math.random() * Math.PI * 2;
-        const velocity = Math.random() * 10 + 5;
-        const lifetime = Math.random() * 1000 + 500;
+        const velocity = Math.random() * 15 + 10; // Faster particles
+        const lifetime = Math.random() * 1500 + 1000; // Longer lifetime
 
         // Style the particle
         particle.style.cssText = `
@@ -42,6 +63,7 @@ function createExplosion(x, y) {
             border-radius: 50%;
             pointer-events: none;
             z-index: 9999;
+            box-shadow: 0 0 ${size/2}px ${color};
             animation: particle-explode ${lifetime}ms ease-out forwards;
         `;
 
@@ -82,18 +104,22 @@ function updateMood(mood) {
         case 'beast':
             angerLevel = 100;
             angerMeter.style.width = '100%';
-            // Create multiple explosions
-            const button = event.target;
-            const rect = button.getBoundingClientRect();
-            const centerX = rect.left + rect.width / 2;
-            const centerY = rect.top + rect.height / 2;
             
-            // Create multiple explosions in a pattern
-            createExplosion(centerX, centerY);
-            setTimeout(() => createExplosion(centerX - 50, centerY), 100);
-            setTimeout(() => createExplosion(centerX + 50, centerY), 200);
-            setTimeout(() => createExplosion(centerX, centerY - 50), 300);
-            setTimeout(() => createExplosion(centerX, centerY + 50), 400);
+            // Create massive explosions across the screen
+            const screenWidth = window.innerWidth;
+            const screenHeight = window.innerHeight;
+            
+            // Center explosion
+            createExplosion(screenWidth/2, screenHeight/2);
+            
+            // Create explosions in a grid pattern
+            for(let x = 0; x < screenWidth; x += screenWidth/4) {
+                for(let y = 0; y < screenHeight; y += screenHeight/4) {
+                    setTimeout(() => {
+                        createExplosion(x, y);
+                    }, Math.random() * 500);
+                }
+            }
             
             // Add dramatic effect
             document.body.classList.add('beast-mode');
@@ -139,7 +165,7 @@ setInterval(() => {
     }, 3000);
 }, 30000); // Show a new fact every 30 seconds
 
-// Add CSS for animations
+// Update the CSS animations
 const style = document.createElement('style');
 style.textContent = `
     @keyframes slideIn {
@@ -157,9 +183,17 @@ style.textContent = `
         }
         100% {
             transform: translate(
-                ${Math.random() * 200 - 100}px,
-                ${Math.random() * 200 - 100}px
+                ${Math.random() * 400 - 200}px,
+                ${Math.random() * 400 - 200}px
             ) scale(0);
+            opacity: 0;
+        }
+    }
+    @keyframes flash {
+        0% {
+            opacity: 1;
+        }
+        100% {
             opacity: 0;
         }
     }
