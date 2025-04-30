@@ -15,6 +15,46 @@ setInterval(() => {
     document.getElementById('bathroomTimer').textContent = bathroomMinutes;
 }, 60000); // 1 minute in milliseconds
 
+// Function to create explosion particles
+function createExplosion(x, y) {
+    const colors = ['#ff0000', '#ff4400', '#ff8800', '#ffaa00'];
+    const particles = 50; // Number of particles
+
+    for (let i = 0; i < particles; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        
+        // Random properties for each particle
+        const size = Math.random() * 10 + 5;
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        const angle = Math.random() * Math.PI * 2;
+        const velocity = Math.random() * 10 + 5;
+        const lifetime = Math.random() * 1000 + 500;
+
+        // Style the particle
+        particle.style.cssText = `
+            position: fixed;
+            left: ${x}px;
+            top: ${y}px;
+            width: ${size}px;
+            height: ${size}px;
+            background: ${color};
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            animation: particle-explode ${lifetime}ms ease-out forwards;
+        `;
+
+        // Add particle to the page
+        document.body.appendChild(particle);
+
+        // Remove particle after animation
+        setTimeout(() => {
+            particle.remove();
+        }, lifetime);
+    }
+}
+
 // Function to update mood and anger level
 function updateMood(mood) {
     const angerMeter = document.querySelector('.anger-level');
@@ -42,11 +82,24 @@ function updateMood(mood) {
         case 'beast':
             angerLevel = 100;
             angerMeter.style.width = '100%';
-            // Add some dramatic effect
-            document.body.style.animation = 'shake 0.5s';
+            // Create multiple explosions
+            const button = event.target;
+            const rect = button.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            
+            // Create multiple explosions in a pattern
+            createExplosion(centerX, centerY);
+            setTimeout(() => createExplosion(centerX - 50, centerY), 100);
+            setTimeout(() => createExplosion(centerX + 50, centerY), 200);
+            setTimeout(() => createExplosion(centerX, centerY - 50), 300);
+            setTimeout(() => createExplosion(centerX, centerY + 50), 400);
+            
+            // Add dramatic effect
+            document.body.classList.add('beast-mode');
             setTimeout(() => {
-                document.body.style.animation = '';
-            }, 500);
+                document.body.classList.remove('beast-mode');
+            }, 1000);
             break;
     }
 
@@ -96,6 +149,19 @@ style.textContent = `
     @keyframes slideOut {
         from { transform: translateX(0); }
         to { transform: translateX(100%); }
+    }
+    @keyframes particle-explode {
+        0% {
+            transform: translate(0, 0) scale(1);
+            opacity: 1;
+        }
+        100% {
+            transform: translate(
+                ${Math.random() * 200 - 100}px,
+                ${Math.random() * 200 - 100}px
+            ) scale(0);
+            opacity: 0;
+        }
     }
 `;
 document.head.appendChild(style); 
