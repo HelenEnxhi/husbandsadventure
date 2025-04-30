@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Husband's Daily Adventures</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>My Husband's Daily Adventures</h1>
+            <p class="subtitle">A day in the life of a workaholic, phone-addicted, bathroom-enthusiast</p>
+        </header>
+
+        <div class="complaints">
+            <div class="complaint-card" id="work">
+                <h2>Work Mode: Always On</h2>
+                <p>Working 24/7, even when he's not at work. The laptop is his new best friend.</p>
+                <div class="timer">Hours spent working today: <span id="workTimer">0</span></div>
+            </div>
+
+            <div class="complaint-card" id="phone">
+                <h2>Phone Addiction Level: Expert</h2>
+                <p>His phone is practically glued to his hand. I'm starting to think it's his real wife.</p>
+                <div class="phone-emoji">📱</div>
+            </div>
+
+            <div class="complaint-card" id="bathroom">
+                <h2>Bathroom Time: 3 Hours and Counting</h2>
+                <p>What does he do in there? We may never know...</p>
+                <div class="timer">Current bathroom session: <span id="bathroomTimer">0</span> minutes</div>
+            </div>
+
+            <div class="complaint-card" id="anger">
+                <h2>Anger Level: Beast Mode</h2>
+                <p>When things don't go his way, the beast emerges. Rawr!</p>
+                <div class="anger-meter">
+                    <div class="anger-level"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="fun-facts">
+            <h2>Fun Facts About My Husband</h2>
+            <ul>
+                <li>Can find his phone in 0.1 seconds when it's lost</li>
+                <li>Has mastered the art of ignoring everything while on his phone</li>
+                <li>Bathroom breaks longer than most people's vacations</li>
+                <li>Work emails are more important than human interaction</li>
+            </ul>
+        </div>
+
+        <div class="mood-meter">
+            <h2>Current Mood</h2>
+            <div class="mood-options">
+                <button onclick="updateMood('happy')">Happy</button>
+                <button onclick="updateMood('neutral')">Neutral</button>
+                <button onclick="updateMood('angry')">Angry</button>
+                <button onclick="updateMood('beast')">BEAST MODE</button>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html> 
